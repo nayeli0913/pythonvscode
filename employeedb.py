@@ -5,7 +5,7 @@ st.set_page_config(layout='wide')
 df = pd.read_csv('employee.csv')
 user_id= "USER" + str(len(df) +1)
 
-menu = st.sidebar.selectbox('Menu',['Register here','Employee file', 'Database'])
+menu = st.sidebar.selectbox('Menu',['Register here', 'Database', 'Employee file'])
 
 if menu =='Register here':
 
