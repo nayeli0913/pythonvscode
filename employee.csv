@@ -1,0 +1,4 @@
+User ID,First name,Last name,Email,Gender,Education,Salary,Department,Job title,Employment date,Employee status
+USER1,Jane,Smith,js@gmail.com,Female,College,0.0,Sales,Intern,2023-10-28,Part time
+USER2,Jason,Wales,jay@yahoo.com,Male,Masters degree,200000.0,Marketing,Supervisor,2023-12-14,Full time
+USER3,Jake,Smith,jake@gmail.com,Male,Bachelors degree,1000.0,Engineering,Intern,2023-12-02,Part time
