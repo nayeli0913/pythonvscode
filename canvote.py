@@ -21,3 +21,4 @@ else:
             st.success(f"{name}, you have voted for Donald trump")
         else:
             st.success(f"{name}, you have voted for Kamala Harris")
+            st.write('new')
