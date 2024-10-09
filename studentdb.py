@@ -19,7 +19,7 @@ st.set_page_config(layout='wide',page_title='Student Database',page_icon='😮')
 df = pd.read_csv('scores.csv')
 #csv file is a text file where each data is seperated by a comma (comma seperated value)
 
-studentID = 'Student '+ str(len(df) + 1)
+studentID = 'Student'+ str(len(df) + 1)
 
 menu = st.sidebar.selectbox('Menu',['Submit', 'Table and chart','Student file'])
 
@@ -112,34 +112,39 @@ if menu == 'Student file':
     searchstudent = st.button('Find Student')
 
   if searchstudent:
-     if findstudent:
-        searchresult = df[df['Student ID'].str.lower() == findstudent.lower()]
-        getname = searchresult['Name'].iloc[0] #get the first item in name column.iloc = index position
-        getmath = searchresult['Maths'].iloc[0]
-        geteng = searchresult['English'].iloc[0]
-        getsci = searchresult ['Science'].iloc[0]
-        gethist = searchresult['History'].iloc[0]
-        getavg = searchresult['Average'].iloc[0]
-        getgrd = searchresult['Grade'].iloc [0]
+      if findstudent:
+        try:
+          searchresult = df[df['Student ID'].str.lower() == findstudent.lower()]
+          getname = searchresult['Name'].iloc[0] #get the first item in name column.iloc = index position
+          getmath = searchresult['Maths'].iloc[0]
+          geteng = searchresult['English'].iloc[0]
+          getsci = searchresult ['Science'].iloc[0]
+          gethist = searchresult['History'].iloc[0]
+          getavg = searchresult['Average'].iloc[0]
+          getgrd = searchresult['Grade'].iloc [0]
 
-        p1,p2,p3 = st.columns(3)
+          p1,p2,p3 = st.columns(3)
 
-        with p1:
-          st.header(f':red[{getname}]')
-          st.header('Subject list')
-          st.write('Math')
-          st.write('English')
-          st.write('Science')
-          st.write('History')
-          st.write('Average')
-          st.header(f':red[GRADE:] {getgrd}')
+          with p1:
+            st.header(f':red[{getname}]')
+            st.header('Subject list')
+            st.write('Math')
+            st.write('English')
+            st.write('Science')
+            st.write('History')
+            st.write('Average')
+            st.header(f':red[GRADE:] {getgrd}')
 
-        
-        with p2:
-           st.header('')
-           st.header('Score')
-           st.write(f'{getmath}')
-           st.write(f'{geteng}')
-           st.write(f'{getsci}')
-           st.write(f'{gethist}')
-           st.write(f'{getavg}')
+          
+          with p2:
+            st.header('')
+            st.header('Score')
+            st.write(f'{getmath}')
+            st.write(f'{geteng}')
+            st.write(f'{getsci}')
+            st.write(f'{gethist}')
+            st.write(f'{getavg}')
+        except:
+          st.error('Please check the student ID')
+      else:
+        st.error('Please fill in the box')
