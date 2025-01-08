@@ -53,5 +53,5 @@ if menu == 'Invoice generator':
         st.write("Bank name: Td Canada")
     with a2:
         st.write("Payment due:")
-        finaltotal = total + taxcalc + discountcalc
+        finaltotal = total + taxcalc - discountcalc
         st.title(f"${finaltotal:,}")
