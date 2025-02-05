@@ -140,12 +140,21 @@ def generatepdf():
     pdf.cell(w=colw,txt=f'{quant}',ln=True)
 
     pdf.set_font(family='Courier',size=12,style='B')
+    pdf.set_xy(xpos+85,ypos+160)
+    pdf.cell(w=colw,txt=f'Tax:${taxcalc}',ln=True)
+
+    pdf.set_font(family='Courier',size=12,style='B')
     pdf.set_xy(xpos+110,ypos+150)
     pdf.cell(w=colw,txt=f'${price}',ln=True)
 
     pdf.set_font(family='Courier',size=12,style='B')
+    pdf.set_xy(xpos+110,ypos+160)
+    pdf.cell(w=colw,txt=f'Discount:${discountcalc:,}',ln=True)
+
+    pdf.set_font(family='Courier',size=12,style='B')
     pdf.set_xy(xpos+140,ypos+150)
     pdf.cell(w=colw,txt=f'${total:,}',ln=True)
+
 
     pdf.set_font(family='Courier',size=16,style='B')
     pdf.set_xy(xpos,ypos+190)
