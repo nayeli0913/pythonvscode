@@ -1,6 +1,7 @@
 import streamlit as st
 import webbrowser
 import pandas as pd
+import plotly.express as px
 
 st.set_page_config(page_title='Videos site', page_icon='👓')
 csvlink='videosrating.csv'
@@ -10,9 +11,21 @@ try:
 except:
     videocsv = pd.DataFrame()
 
-st.table(videocsv)
+#st.table(videocsv)
 menu = st.sidebar.selectbox("Menu",['Videos','Video ratings'])
 
+if menu == 'Video ratings':
+    try:
+        chart = st.pills('Data chart',['Barchart','Piechart'],default='Barchart')
+        melt_tables = videocsv.melt(var_name='Video title', value_name='Number of plays')
+        if chart == 'Barchart':
+            barchart = px.bar(melt_tables,x='Video title',y='Number of plays')
+            st.plotly_chart(barchart)
+        if chart == 'Piechart':
+            piechart = px.pie(melt_tables,names='Video title', values='Number of plays')
+            st.plotly_chart(piechart)
+    except KeyError:
+        st.info('sorry no table')
 
 if menu == 'Videos':
     vidcat = st.sidebar.pills('Choose videos',['All','Baking','Music','Education','Animals'],default='All')
