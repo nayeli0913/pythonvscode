@@ -24,30 +24,48 @@ model = configure_ai()
 #send the question,orompt cv in the ai
 
 def ai_cv(name,email,phone,skills,exp,edu):
-    prompt = f"""
-    Extract the information below and rewrite it to create a good composed, comprehensive resume starting with my
-    professional summary, and a comprehensive key skills with complete sentences, each of what I can do and
-    also include a comprehensive career experience. do not include any ai suggestions or comments/evidence that it was
-    written by an AI. 
 
-    Name:
-    {name}
-    Email:
-    {email}
-    Phone:
-    {phone}
-    Key Skills here for professional summary:
+    summary_prompt = f"""
+    Extract the informtaion below to create a good composed, comprehensive proffessional summary
+    using these information:
+    {skills}{exp}
+    """
+
+    skills_prompt = f"""
+    Extract the information below to create a comprehensive key skils section with complete sentences each of what I can do
+
+    using the key stills here:
     {skills}
-    Career experience:
-    {exp}
-    Education
-    {edu}
 
     """
 
+    exp_prompt = f"""
+    extract the information below to create a comprehensive career experience section with complete sentences of what I've
+    achieved at previous jobs.
+
+    using my career experience here:
+    {exp}
+    """
+
+    edu_prompt = f"""
+    extract the information below to create my educational background simply in bullet points
+    using my educational background here
+    {edu}
+    """
+
     try:
-        response = model.generate_content(prompt)
-        return response.text
+        summarycontent = model.generate_content(summary_prompt)
+        summaryreturn = summarycontent.text
+
+        skillscontent = model.generate_content(skills_prompt)
+        summaryreturn = skillscontent.text
+
+        educontent = model.generate_content(edu_prompt)
+        summaryreturn = educontent.text
+        
+        expcontent = model.generate_content(exp_prompt)
+        summaryreturn = expcontent.text
+
     except Exception as e:
         st.error(f'Error generating resume: {str(e)}')
 

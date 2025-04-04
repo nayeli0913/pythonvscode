@@ -7,11 +7,17 @@
 
 
 import streamlit as st
+evenlist=[]
+oddlist = []
 
 first = st.number_input('Enter the first number')
 last = st.number_input('Enter the last number')
 
 for number in range(first, last+1):
     if number % 2 == 0:
-        pass
+        evenlist.append(number)
+    else:
+        oddlist.append(number)
+st.write('There are',len(evenlist),'even numbers')
+st.write('There are',len(oddlist),'odd numbers')
 
