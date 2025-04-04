@@ -1,5 +1,5 @@
 import streamlit as st
-
+from fpdf import FPDF 
 import pandas as pd
 st.set_page_config(layout='wide')
 df = pd.read_csv('employee.csv')
@@ -9,50 +9,50 @@ menu = st.sidebar.selectbox('Menu',['Register here', 'Database', 'Employee file'
 
 if menu =='Register here':
 
-    st.subheader('Register your employee')
-    r1,r2 = st.columns(2)
+   st.subheader('Register your employee')
+   r1,r2 = st.columns(2)
 
-    with r1:
-       fn = st.text_input('Enter first name')
-       email = st.text_input('Enter email')
-       education = st.selectbox('Education level',['College','Masters degree','Bachelors degree','Post-graduate'])
-       dep = st.selectbox('Department',['Sales','Engineering','Marketing','Management'])
-       empdate = st.date_input('Employment date')
+   with r1:
+      fn = st.text_input('Enter first name')
+      email = st.text_input('Enter email')
+      education = st.selectbox('Education level',['College','Masters degree','Bachelors degree','Post-graduate'])
+      dep = st.selectbox('Department',['Sales','Engineering','Marketing','Management'])
+      empdate = st.date_input('Employment date')
 #intern junior senior supervisor manager 
-    with r2:
-       ln = st.text_input('Enter last name')
-       gender = st.radio('Select gender',['Male','Female'],horizontal=True)
-       st.write('')
-       salary = st.number_input('Monthly salary')
-       title = st.selectbox('Job title',['Intern','Junior','Senior','Supervisor','Manager'])
-       status = st.selectbox('Employee status',['Part time','Full time'])
-    
-    date = st.date_input('Enter the registration date')
+   with r2:
+      ln = st.text_input('Enter last name')
+      gender = st.radio('Select gender',['Male','Female'],horizontal=True)
+      st.write('')
+      salary = st.number_input('Monthly salary')
+      title = st.selectbox('Job title',['Intern','Junior','Senior','Supervisor','Manager'])
+      status = st.selectbox('Employee status',['Part time','Full time'])
+   
+   date = st.date_input('Enter the registration date')
 
-    if st.button('Submit'):
-        employee_df = pd.DataFrame({"User ID":[user_id],"First name":[fn],"Last name":[ln],"Email":[email],"Gender":[gender],
+   if st.button('Submit'):
+      employee_df = pd.DataFrame({"User ID":[user_id],"First name":[fn],"Last name":[ln],"Email":[email],"Gender":[gender],
                                     "Education":[education],"Salary":[salary],"Department":[dep],"Job title":[title],
                                     "Employment date":[empdate],"Employee status":[status]})
-        new_df = pd.concat([df,employee_df])
-        new_df.to_csv('employee.csv',index=False)
-        st.success("Employee registered")
+      new_df = pd.concat([df,employee_df])
+      new_df.to_csv('employee.csv',index=False)
+      st.success("Employee registered")
 
 
 if menu == 'Employee file':
-    t1,t2,t3 = st.columns(3)
-    with t3:
+   t1,t2,t3 = st.columns(3)
+   with t3:
       st.subheader('Find an employee here')
       st.write('')
       employee = st.text_input('Enter employee ID')
 
-      findbutton = st.button('Find employee')
+      findbutton = st.checkbox('Show employee info')
 
-    if findbutton:
-       if employee:
-          findresult = df[df['User ID'] == employee]
-          #st.dataframe(findresult)
+   if findbutton == True:
+      if employee:
+         findresult = df[df['User ID'] == employee]
+         #st.dataframe(findresult)
 
-          if not findresult.empty:
+         if not findresult.empty:
             getid = findresult['User ID'].iloc[0]
             getfn = findresult['First name'].iloc[0]
             getln = findresult['Last name'].iloc[0]
@@ -115,8 +115,91 @@ if menu == 'Employee file':
             
             st.divider()
 
-          else:
-             st.error("Employee ID not found")
+            def generatepdf():
+               pdf = FPDF()
+
+               pdf.add_page()
+
+               xpos = 20
+               ypos = 30
+               colw = 90
+
+               pdf.set_font(family='Courier',size=30,style='B')
+               pdf.set_xy(xpos,ypos+70)
+               pdf.cell(w=colw,txt=f'{getfn} {getln}',ln=True)
+
+               pdf.set_line_width(0.5)
+               pdf.line(xpos,ypos+75,xpos+145,ypos+75)
+
+               pdf.set_font(family='Courier',size=12,style='B')
+               pdf.set_xy(xpos,ypos+85)
+               pdf.cell(w=colw,txt=f'Email',ln=True)
+               pdf.set_font(family='Courier',size=12)
+               pdf.set_xy(xpos,ypos+90)
+               pdf.cell(w=colw,txt=f'{getem}',ln=True)
+
+               pdf.set_font(family='Courier',size=12,style='B')
+               pdf.set_xy(xpos+50,ypos+85)
+               pdf.cell(w=colw,txt=f'Gender',ln=True)
+               pdf.set_font(family='Courier',size=12)
+               pdf.set_xy(xpos+50,ypos+90)
+               pdf.cell(w=colw,txt=f'{getgn}',ln=True)
+
+               pdf.set_font(family='Courier',size=12,style='B')
+               pdf.set_xy(xpos+100,ypos+85)
+               pdf.cell(w=colw,txt=f'Education',ln=True)
+               pdf.set_font(family='Courier',size=12)
+               pdf.set_xy(xpos+100,ypos+90)
+               pdf.cell(w=colw,txt=f'{geted}',ln=True)
+
+               pdf.set_font(family='Courier',size=12,style='B')
+               pdf.set_xy(xpos,ypos+100)
+               pdf.cell(w=colw,txt=f'Salary',ln=True)
+               pdf.set_font(family='Courier',size=12)
+               pdf.set_xy(xpos,ypos+105)
+               pdf.cell(w=colw,txt=f'${getsa:,}',ln=True)
+
+               pdf.set_font(family='Courier',size=12,style='B')
+               pdf.set_xy(xpos+50,ypos+100)
+               pdf.cell(w=colw,txt=f'Department',ln=True)
+               pdf.set_font(family='Courier',size=12)
+               pdf.set_xy(xpos+50,ypos+105)
+               pdf.cell(w=colw,txt=f'{getdp}',ln=True)
+
+               pdf.set_font(family='Courier',size=12,style='B')
+               pdf.set_xy(xpos+100,ypos+100)
+               pdf.cell(w=colw,txt=f'Job Title',ln=True)
+               pdf.set_font(family='Courier',size=12)
+               pdf.set_xy(xpos+100,ypos+105)
+               pdf.cell(w=colw,txt=f'{getjt}',ln=True)
+
+               pdf.set_font(family='Courier',size=12,style='B')
+               pdf.set_xy(xpos,ypos+115)
+               pdf.cell(w=colw,txt=f'Employee status',ln=True)
+               pdf.set_font(family='Courier',size=12)
+               pdf.set_xy(xpos,ypos+120)
+               pdf.cell(w=colw,txt=f'{getes}',ln=True)
+
+               pdf.set_font(family='Courier',size=12,style='B')
+               pdf.set_xy(xpos+100,ypos+115)
+               pdf.cell(w=colw,txt=f'Employment date',ln=True)
+               pdf.set_font(family='Courier',size=12)
+               pdf.set_xy(xpos+100,ypos+120)
+               pdf.cell(w=colw,txt=f'{getep}',ln=True)
+               
+               pdf_file = 'employeeinfo.pdf'
+               pdf.output('employeeinfo.pdf')
+               return pdf_file
+            
+            callpdf = generatepdf() 
+            with open(callpdf,'rb') as genpdf: 
+               readpdf = genpdf.read()
+            
+            st.sidebar.download_button(label='Download employee file',data=readpdf,file_name="employeeinfo.pdf")
+            
+
+         else:
+            st.error("Employee ID not found")
 
 if menu =='Database':
-    st.dataframe(df,use_container_width=True)
+   st.dataframe(df,use_container_width=True)
