@@ -38,8 +38,8 @@ if menu == 'Application':
     
     if st.button('Submit'):
         schooldf = pd.DataFrame({"Parent/guardian firstname":[pfn],"Parent/guardian lastname":[pln],"Child age":[age],
-                                 "Child gender":[cg],"Child firstname":[cfn],"Child lastname":[cln],"City":[city],"Region":[region],
-                                 "Postal/zip code":[code],"Country":[country],"Phone number":[pn]})
+                                "Child gender":[cg],"Child firstname":[cfn],"Child lastname":[cln],"City":[city],"Region":[region],
+                                "Postal/zip code":[code],"Country":[country],"Phone number":[pn]})
         newdf = pd.concat([sch,schooldf],ignore_index=True)
         newdf.to_csv('schoolapp.csv',index=False)
         st.success('Application registered')
