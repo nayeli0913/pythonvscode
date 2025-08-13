@@ -6,3 +6,5 @@ nadiv,Donald trump
 emma,Kamala Harris
 josh,Donald trump
 usernam,Kamala Harris
+if 'answers' not in st.session_state:
+    st.session_state.answers = 0
