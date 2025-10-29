@@ -63,7 +63,6 @@ if menu == 'Invoice generator':
 def generatepdf():
     pdf = FPDF()
 
-
     #Add a new page
     pdf.add_page()
 
@@ -198,7 +197,6 @@ with open(callpdf,'rb') as genpdf: #opens generator function
 #            write_pdf = base64.b64encode(readpdf).decode('utf-8')
 #            embed_pdf = f'<embed src="data:application/pdf;base64, {write_pdf}" type="application/pdf" width="70%" height="600px" />'
 #            st.markdown (embed_pdf, unsafe_allow_html=True)
-
 if '@' in email :
     if bname and email and invdate and invnum and duedate and desc and quant and price:
 
