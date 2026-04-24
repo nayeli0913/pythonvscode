@@ -1,82 +1,55 @@
 import streamlit as st
-import google.generativeai as genai
+import requests #module used to interact with other websitse/apps
 
-st.sidebar.title('AI resume generator')
-st.sidebar.write('Fill in your details to generate a good resume')
-name = st.sidebar.text_input('Please enter your name')
-if st.sidebar.checkbox('Add email'):
-    email = st.sidebar.text_input('Please enter your email')
-if st.sidebar.checkbox('Add phone number'):
-    phone = st.sidebar.text_input('Please enter your phone number')
-skills = st.sidebar.text_area('Key skills for your resume',placeholder='eg. Experienced quality control expert')
-exp = st.sidebar.text_area('Details about your previous experiences',placeholder='I have worked with samsung TV department for 4 years, etc.')
-edu = st.sidebar.text_area('Details about your past education & years',placeholder='eg. Graduated harvard in the class of 2024')
+#-------------------CONFIGURATIONS------------------------
+apikey = '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' 
+apilink = "https://openrouter.ai/api/v1/chat/completions" #THIS CONNECTS TO OPENROUTER
+headers = {'Authorization': f'Bearer {apikey}', 'Content-Type': 'application/json'}
+#----------------------------------------
 
-api_key = 'AIzaSyDt1SUOP27V9Caow5tOnWwGvSg0Mn-X_eA'
+#-----------Funtion to send a.i prompts-------------------------
+def ask_ai(content):
+    data = {'model':'openai/gpt-3.5-turbo', 'messages': [{'role': 'user', 'content': content}]}
+    response = requests.post(apilink,headers=headers,json=data) #post=send, json is the file 
+    return response.json() ['choices'][0] ['message'] ['content'] #waiting for the a.i response
+#----------------------------------------
 
-def configure_ai():
-    genai.configure(api_key=api_key)
-    return genai.GenerativeModel('gemini-1.5-pro')
+name = st.sidebar.text_input('Full name')
+phone = st.sidebar.text_input('Phone number')
+home = st.sidebar.text_input('Current country and area of residence')
+st.sidebar.divider()
 
-#start our gemin ai
-model = configure_ai()
+pt = st.sidebar.toggle('Photo (optional)')
+if pt:
+    photo = st.sidebar.file_uploader('Upload a JPG, PNG, or JPEG image of yourself',type=['JPG','PNG','JPEG'])
 
-#send the question,orompt cv in the ai
+emt = st.sidebar.toggle('Email address (optional)')
+if emt:
+    mail = st.sidebar.text_input('Enter your email address')
+st.sidebar.divider()
 
-def ai_cv(name,email,phone,skills,exp,edu):
+st.sidebar.subheader('Key skills (one per line)')
+skills = st.sidebar.text_area('',label_visibility='collapsed',placeholder=f"""Example: 
+Adobe photoshop
+Customer service""")
 
-    summary_prompt = f"""
-    Extract the informtaion below to create a good composed, comprehensive proffessional summary
-    using these information:
-    {skills}{exp}
-    """
+st.sidebar.subheader('Work experience')
+workexp = st.sidebar.text_area('',label_visibility='collapsed',placeholder=f"""Example:
+Assistant tech officer at Nintendo Japan (2017-2024)""")
 
-    skills_prompt = f"""
-    Extract the information below to create a comprehensive key skils section with complete sentences each of what I can do
+st.sidebar.subheader('Education')
+edexp = st.sidebar.text_area('',label_visibility='collapsed',placeholder=f"""Example:
+Harvard University class of 2022 with a doctorate in computer science (2019-2022)""")
 
-    using the key stills here:
-    {skills}
+summary = f'''Design a professional summary for my CV. Make it 4-5 lines using the information given below
+my key skills: {skills}
+my work experience: {workexp}
+my education: {edexp}
+'''
 
-    """
-
-    exp_prompt = f"""
-    extract the information below to create a comprehensive career experience section with complete sentences of what I've
-    achieved at previous jobs.
-
-    using my career experience here:
-    {exp}
-    """
-
-    edu_prompt = f"""
-    extract the information below to create my educational background simply in bullet points
-    using my educational background here
-    {edu}
-    """
-
-    try:
-        summarycontent = model.generate_content(summary_prompt)
-        summaryreturn = summarycontent.text
-
-        skillscontent = model.generate_content(skills_prompt)
-        summaryreturn = skillscontent.text
-
-        educontent = model.generate_content(edu_prompt)
-        summaryreturn = educontent.text
-        
-        expcontent = model.generate_content(exp_prompt)
-        summaryreturn = expcontent.text
-
-    except Exception as e:
-        st.error(f'Error generating resume: {str(e)}')
-
-if st.sidebar.button('Generate Resume'):
-    if name and phone and skills:
-        with st.spinner('Processing.. Please wait'):
-            updated_cv = ai_cv(name,email,phone,skills,exp,edu)
-
-        if updated_cv:
-            st.sidebar.success('Resume generated successfuly')
-
-            st.write(updated_cv)
-    else:
-        st.sidebar.warning('Please provide resume details')
+generate = st.sidebar.button('Generate my CV')
+if generate:
+    with st.spinner('Generating your cv'):
+        if name and phone and home and workexp and edexp and skills:
+            summaryresponse = ask_ai(summary)
+            st.write(summaryresponse)
